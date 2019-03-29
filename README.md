@@ -28,10 +28,15 @@ Example configuration:
     "mapping": {
         "a": [2, 3, 4],
         "b": [5, 6, 7],
-        "haus/eg/flur/haustuere": [8]
+        "haus/eg/haustuere": [8]
     }
 }
 ```
+
+The mapping maps the target mqtt topic to the deconz ids.
+It is possible to map a list of deconz ids to one topic.
+This can be used to map multiple properties of a sensor to one 
+topic path, for example when using a `Xiaomi Aquara Termperature/Humidity/Pressure` sensor.
 
 
 ## Openhab example 

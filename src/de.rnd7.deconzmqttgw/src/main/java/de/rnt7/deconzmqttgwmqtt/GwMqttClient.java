@@ -28,6 +28,7 @@ public class GwMqttClient {
 	
 	private Optional<MqttClient> connect() {
 		try {
+			LOGGER.info("Connecting MQTT client");
 			MqttClient result = new MqttClient(broker, CLIENTID, persistence);
 			MqttConnectOptions connOpts = new MqttConnectOptions();
 			connOpts.setCleanSession(true);

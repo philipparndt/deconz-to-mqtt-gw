@@ -38,7 +38,6 @@ It is possible to map a list of deconz ids to one topic.
 This can be used to map multiple properties of a sensor to one 
 topic path, for example when using a `Xiaomi Aquara Termperature/Humidity/Pressure` sensor.
 
-
 ## Openhab example 
 
 mqtt.things

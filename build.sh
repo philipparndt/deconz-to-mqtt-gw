@@ -1,2 +1,2 @@
 #!/bin/sh
-docker build -t deconzmqtt .
+docker build -t pharndt/deconzmqttgw .

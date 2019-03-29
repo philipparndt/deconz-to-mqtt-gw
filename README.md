@@ -12,7 +12,7 @@ Bridge mqtt:broker:mosquitto [ host="localhost", port="1883", secure=false, clie
 		Type number : Pressure [stateTopic="a/pressure"]
 		Type number : Battery [stateTopic="a/battery"]
 	}
-	Thing topic frontdoor "Contact" @ "Home" {
+	Thing topic somecontact "SomeContact" @ "Home" {
     Channels:
     	Type string : contact [
 				stateTopic="haus/eg/haustuere/open", 
@@ -37,22 +37,22 @@ Number SensorA_Battery "Battery [%.1f %%]" {
 	channel="mqtt:topic:mosquitto:sensora:Battery"
 }
 
-Contact Contact_FrontDoor "Haustüre" ["ContactSensor"]
-String Raw_FrontDoor "Haustüre" {
-	channel="mqtt:topic:mosquitto:frontdoor:contact"
+Contact Contact_SomeContact "SomeContact" ["ContactSensor"]
+String Raw_SomeContact "SomeContact" {
+	channel="mqtt:topic:mosquitto:somecontact:contact"
 }
 ```
 
 mqtt.rules
 ```
-rule "Raw_FrontDoor" 
-when Item Raw_FrontDoor received update
+rule "Raw_SomeContact" 
+when Item Raw_SomeContact received update
 then 
-    if (Raw_FrontDoor.state == "false") {
-        sendCommand(Contact_FrontDoor, CLOSED)
+    if (Raw_SomeContact.state == "false") {
+        sendCommand(Contact_SomeContact, CLOSED)
     }
     else {
-        sendCommand(Contact_FrontDoor, OPEN)
+        sendCommand(Contact_SomeContact, OPEN)
     }
 end
 ```

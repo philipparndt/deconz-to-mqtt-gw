@@ -1,0 +1,1 @@
+{"e":"changed","id":"8","r":"sensors","state":{"lastupdated":"2019-03-29T09:15:26","open":true},"t":"event","uniqueid":"00:11:22:33:44:55:66:77-01-0006"}

@@ -1,0 +1,1 @@
+{"config":{"battery":91,"offset":0,"on":true,"reachable":true},"e":"changed","id":"5","r":"sensors","t":"event","uniqueid":"77:66:55:44:33:22:11:00-01-0402"}

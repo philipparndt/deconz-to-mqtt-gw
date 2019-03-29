@@ -1,0 +1,1 @@
+{"e":"changed","id":"6","r":"sensors","state":{"humidity":3619,"lastupdated":"2019-03-29T09:02:40"},"t":"event","uniqueid":"77:66:55:44:33:22:11:00-01-0402"}

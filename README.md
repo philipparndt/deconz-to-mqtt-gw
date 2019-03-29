@@ -1,5 +1,39 @@
 # Deconz to MQTT Gateway
 
+## Create an API key
+
+You neen a deconz API key. To get this:
+
+- Open the phoscon web application and navigate to: Gateway / Extended
+- Click on: `Connect App``
+- Execute the following command within the next 60 secounds: `curl -H "Content-Type: application/json" -X POST -d '{"devicetype": "deconz-mqtt"}' http://<host>/api`
+
+the given username can be used as API key.
+
+## Get the websocket port
+
+`curl http://<host>/api/<apikey>/config | grep -Eo "websocketport\":\d+"`
+
+## Start the gateway
+
+`java -jar deconz-to-mqtt-gw.jar config.json`
+
+Example configuration:
+
+```json
+{
+    "deconz-url": "ws://192.168.0.100:443",
+    "mqtt-url": "tcp://192.168.0.100:1883",
+
+    "mapping": {
+        "a": [2, 3, 4],
+        "b": [5, 6, 7],
+        "haus/eg/flur/haustuere": [8]
+    }
+}
+```
+
+
 ## Openhab example 
 
 mqtt.things

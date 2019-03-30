@@ -39,7 +39,14 @@ public class MessageParser {
 	}
 
 	private DeconzMessage parseStateMessage(JSONObject message, JSONObject state) {
-		StateMessage result = new StateMessage(message.getInt("id"), message.getString("uniqueid"));
+		int id = message.getInt("id");
+		String uniqueId = message.getString("uniqueid");
+		return parseStateMessage(state, id, uniqueId);
+		
+	}
+
+	public StateMessage parseStateMessage(JSONObject state, int id, String uniqueId) {
+		StateMessage result = new StateMessage(id, uniqueId);
 
 		if (state.has(OPEN)) {
 			result.setValue(state.get(OPEN))
@@ -63,7 +70,6 @@ public class MessageParser {
 		}
 		
 		return result;
-		
 	}
 	
 	private DeconzMessage parseConfigMessage(JSONObject message, JSONObject state) {

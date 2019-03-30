@@ -22,6 +22,13 @@ public class Config {
 		lookup.put(id, value);
 	}
 	
+
+	public void putLookupIfAbsent(Integer id, String value) {
+		if (!lookup.containsKey(id)) {
+			putLookup(id, value);
+		}
+	}
+	
 	public String getDeconzWebSocket() {
 		return String.format("ws://%s:%s", deconzIp, deconzWsPort);
 	}
@@ -53,5 +60,6 @@ public class Config {
 	public void setDeconzWebSocketPort(int deconzWsPort) {
 		this.deconzWsPort = deconzWsPort;
 	}
+
 	
 }

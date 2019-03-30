@@ -11,27 +11,30 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.rnd7.deconzmqttgw.Config;
+import de.rnd7.deconzmqttgw.messages.DeconzMessage;
+
 public class GwMqttClient {
 	private static final int QOS = 2;
 	private static final String CLIENTID = "deconz-mqtt-gw";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GwMqttClient.class);
 
-	private MemoryPersistence persistence = new MemoryPersistence();
+	private final MemoryPersistence persistence = new MemoryPersistence();
+	private final Object mutex = new Object();
+	private final Config config;
+
 	private Optional<MqttClient> client;
-	private String broker;
-	private Object mutex = new Object();
 	
-	
-	public GwMqttClient(String broker) {
-		this.broker = broker;
+	public GwMqttClient(Config config) {
+		this.config = config;
 		this.client = connect();
 	}
 	
 	private Optional<MqttClient> connect() {
 		try {
 			LOGGER.info("Connecting MQTT client");
-			MqttClient result = new MqttClient(broker, CLIENTID, persistence);
+			MqttClient result = new MqttClient(this.config.getMqttBroker(), CLIENTID, persistence);
 			MqttConnectOptions connOpts = new MqttConnectOptions();
 			connOpts.setCleanSession(true);
 			result.connect(connOpts);
@@ -59,5 +62,14 @@ public class GwMqttClient {
 				}
 			});
 		}
+	}
+
+	public void publish(DeconzMessage message) {
+		String topic = message.toTopic(config.getLookup());
+		String valueString = message.getValueString();
+		
+		LOGGER.info("{} = {}", topic, valueString);
+		
+		publish(topic, valueString);
 	}
 }

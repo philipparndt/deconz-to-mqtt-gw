@@ -34,9 +34,6 @@ public class ConfigParser {
 		config.setDeconzIp(jsonObject.getString("deconz-ip"));
 		config.setMqttBroker(jsonObject.getString("mqtt-url"));
 
-		initDeconzWebSocketPort(config);
-		initDeconzDevicePaths(config);
-		
 		if (jsonObject.has("mapping")) {
 			JSONObject mapping = (JSONObject) jsonObject.get("mapping");
 			
@@ -51,36 +48,4 @@ public class ConfigParser {
 		return config;
 	}
 	
-	private static void initDeconzWebSocketPort(Config config) throws IOException {
-		URL url = new URL(String.format("http://%s/api/%s/config", 
-				config.getDeconzIp(), 
-				config.getDeconzApiKey()));
-		
-		try (InputStream in = url.openStream()) {
-			JSONObject deconzConfig = new JSONObject(IOUtils.toString(in, StandardCharsets.UTF_8));
-			
-			config.setDeconzWebSocketPort(deconzConfig.getInt("websocketport"));
-		}
-	}
-	
-	private static void initDeconzDevicePaths(Config config) throws IOException {
-		URL url = new URL(String.format("http://%s/api/%s/sensors", 
-				config.getDeconzIp(), 
-				config.getDeconzApiKey()));
-		
-		try (InputStream in = url.openStream()) {
-			JSONObject deconzDevices = new JSONObject(IOUtils.toString(in, StandardCharsets.UTF_8));
-			
-			deconzDevices.keySet().stream()
-			.map(Integer::parseInt)
-			.sorted().forEach(key -> {
-				JSONObject device = deconzDevices.getJSONObject("" + key);
-				String name = device.getString("name");
-				
-				LOGGER.info("device {}: {}", key, name);
-				
-				config.putLookup(key, name);
-			});
-		}
-	}
 }

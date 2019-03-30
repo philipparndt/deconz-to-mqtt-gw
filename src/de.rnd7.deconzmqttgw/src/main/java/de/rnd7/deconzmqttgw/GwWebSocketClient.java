@@ -16,19 +16,12 @@ import de.rnd7.deconzmqttgw.mqtt.GwMqttClient;
 
 public class GwWebSocketClient extends WebSocketClient  {
 	private static final Logger LOGGER = LoggerFactory.getLogger(GwWebSocketClient.class);
-	private Map<Integer, String> lookup=new HashMap<>();
 	private GwMqttClient mqttClient;
 	private Config config;
 
 	public GwWebSocketClient(Config config, URI serverUri) {
 		super(serverUri);
 		this.config = config;
-	}
-	
-	public GwWebSocketClient setSensorTopicLookup(Map<Integer, String> lookup) {
-		this.lookup = lookup;
-		
-		return this;
 	}
 
 	public GwWebSocketClient setMqttClient(GwMqttClient mqttClient) {
@@ -53,16 +46,10 @@ public class GwWebSocketClient extends WebSocketClient  {
 		if (message instanceof NameChangeMessage) {
 			NameChangeMessage msg = (NameChangeMessage) message;
 			this.config.putLookup(msg.getId(), msg.getValue());
-			this.lookup.put(msg.getId(), msg.getValue());
 			return;
 		}
 		
-		String topic = message.toTopic(lookup);
-		String valueString = message.getValueString();
-		
-		LOGGER.info("{} = {}", topic, valueString);
-		
-		this.mqttClient.publish(topic, valueString);
+		this.mqttClient.publish(message);
 	}
 
 	@Override

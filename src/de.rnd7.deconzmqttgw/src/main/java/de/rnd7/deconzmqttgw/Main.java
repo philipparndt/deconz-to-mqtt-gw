@@ -24,7 +24,7 @@ public class Main {
 	@SuppressWarnings("squid:S2189")
 	public Main(Config config) {
 		this.config = config;
-		this.mqttClient = new GwMqttClient(config.getMqttBroker());
+		this.mqttClient = new GwMqttClient(config);
 		
 		try {
 			final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
@@ -68,9 +68,12 @@ public class Main {
 	}
 	
 	private GwWebSocketClient createClient() throws URISyntaxException {
+		DeconzRestAPI api = new DeconzRestAPI(config);
+		api.update(mqttClient);
+		
 		GwWebSocketClient result = new GwWebSocketClient(config, new URI(config.getDeconzWebSocket()))
-		.setMqttClient(mqttClient)
-		.setSensorTopicLookup(config.getLookup());
+		.setMqttClient(mqttClient);
+		
 		result.setConnectionLostTimeout(10);
 		result.connect();
 		

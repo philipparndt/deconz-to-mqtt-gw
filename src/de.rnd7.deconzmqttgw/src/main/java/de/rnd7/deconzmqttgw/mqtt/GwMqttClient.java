@@ -1,4 +1,4 @@
-package de.rnt7.deconzmqttgw.mqtt;
+package de.rnd7.deconzmqttgw.mqtt;
 
 
 import java.util.Optional;

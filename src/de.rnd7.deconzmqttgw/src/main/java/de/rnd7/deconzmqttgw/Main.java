@@ -29,7 +29,6 @@ public class Main {
 		try {
 			final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 			executor.scheduleAtFixedRate(this::connect, 500, 500, TimeUnit.MILLISECONDS);
-			executor.scheduleAtFixedRate(this::ping, 10, 10, TimeUnit.SECONDS);
 			
 			this.deconzClient = createClient();
 			
@@ -49,14 +48,6 @@ public class Main {
 		} catch (InterruptedException e) {
 			LOGGER.debug(e.getMessage(), e);
 			Thread.currentThread().interrupt();
-		}
-	}
-	
-	private void ping() {
-		synchronized(mutex) {
-			if (isConnected()) {
-				deconzClient.sendPing();
-			}
 		}
 	}
 
@@ -80,7 +71,7 @@ public class Main {
 		GwWebSocketClient result = new GwWebSocketClient(config, new URI(config.getDeconzWebSocket()))
 		.setMqttClient(mqttClient)
 		.setSensorTopicLookup(config.getLookup());
-		
+		result.setConnectionLostTimeout(10);
 		result.connect();
 		
 		return result;

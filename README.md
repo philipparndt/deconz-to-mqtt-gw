@@ -10,10 +10,6 @@ You neen a deconz API key. To get this:
 
 the given username can be used as API key.
 
-## Get the websocket port
-
-`curl http://<host>/api/<apikey>/config | grep -Eo "websocketport\":\d+"`
-
 ## Start the gateway
 
 `java -jar deconz-to-mqtt-gw.jar config.json`

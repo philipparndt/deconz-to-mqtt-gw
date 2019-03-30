@@ -70,14 +70,17 @@ public class ConfigParser {
 		
 		try (InputStream in = url.openStream()) {
 			JSONObject deconzDevices = new JSONObject(IOUtils.toString(in, StandardCharsets.UTF_8));
-			for (String key : deconzDevices.keySet()) {
-				JSONObject device = deconzDevices.getJSONObject(key);
+			
+			deconzDevices.keySet().stream()
+			.map(Integer::parseInt)
+			.sorted().forEach(key -> {
+				JSONObject device = deconzDevices.getJSONObject("" + key);
 				String name = device.getString("name");
 				
 				LOGGER.info("device {}: {}", key, name);
 				
-				config.putLookup(Integer.parseInt(key), name);
-			}
+				config.putLookup(key, name);
+			});
 		}
 	}
 }

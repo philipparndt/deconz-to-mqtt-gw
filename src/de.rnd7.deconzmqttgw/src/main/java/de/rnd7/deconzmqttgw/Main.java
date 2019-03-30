@@ -11,11 +11,12 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.rnt7.deconzmqttgwmqtt.GwMqttClient;
+import de.rnt7.deconzmqttgw.mqtt.GwMqttClient;
 
 public class Main {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
-	private GwWebSocketClient client;
+	private GwWebSocketClient deconzClient;
+	private final GwMqttClient mqttClient;
 	
 	private final Config config;
 	private final Object mutex = new Object();
@@ -23,11 +24,13 @@ public class Main {
 	@SuppressWarnings("squid:S2189")
 	public Main(Config config) {
 		this.config = config;
+		this.mqttClient = new GwMqttClient(config.getMqttBroker());
+		
 		try {
 			final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 			executor.scheduleAtFixedRate(this::connect, 500, 500, TimeUnit.MILLISECONDS);
 			
-			this.client = createClient();
+			this.deconzClient = createClient();
 			
 			while (true) {
 				sleep();
@@ -50,9 +53,9 @@ public class Main {
 
 	private void connect() {
 		synchronized(mutex) {
-			if (client == null || client.isClosed()) {
+			if (deconzClient == null || deconzClient.isClosed()) {
 				try {
-					client = createClient();
+					deconzClient = createClient();
 				} catch (URISyntaxException e) {
 					LOGGER.error(e.getMessage(), e);
 				}
@@ -62,7 +65,7 @@ public class Main {
 	
 	private GwWebSocketClient createClient() throws URISyntaxException {
 		GwWebSocketClient result = new GwWebSocketClient(new URI(config.getDeconzWebSocket()))
-		.setMqttClient(new GwMqttClient(config.getMqttBroker()))
+		.setMqttClient(mqttClient)
 		.setSensorTopicLookup(config.getLookup());
 		
 		result.connect();

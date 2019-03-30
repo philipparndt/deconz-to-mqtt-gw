@@ -1,4 +1,4 @@
-package de.rnt7.deconzmqttgwmqtt;
+package de.rnt7.deconzmqttgw.mqtt;
 
 
 import java.util.Optional;
@@ -20,7 +20,9 @@ public class GwMqttClient {
 	private MemoryPersistence persistence = new MemoryPersistence();
 	private Optional<MqttClient> client;
 	private String broker;
-
+	private Object mutex = new Object();
+	
+	
 	public GwMqttClient(String broker) {
 		this.broker = broker;
 		this.client = connect();
@@ -42,18 +44,20 @@ public class GwMqttClient {
 	}
 
 	public void publish(String topic, String value) {
-		if (!client.map(MqttClient::isConnected).orElse(false)) {
-			client = connect();
-		}
-		
-		this.client.ifPresent(mqttClient -> {
-			try {
-				MqttMessage message = new MqttMessage(value.getBytes());
-				message.setQos(QOS);
-				mqttClient.publish(topic, message);
-			} catch (MqttException e) {
-				LOGGER.error(e.getMessage(), e);
+		synchronized(mutex) {
+			if (!client.map(MqttClient::isConnected).orElse(false)) {
+				client = connect();
 			}
-		});
+			
+			this.client.ifPresent(mqttClient -> {
+				try {
+					MqttMessage message = new MqttMessage(value.getBytes());
+					message.setQos(QOS);
+					mqttClient.publish(topic, message);
+				} catch (MqttException e) {
+					LOGGER.error(e.getMessage(), e);
+				}
+			});
+		}
 	}
 }

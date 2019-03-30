@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import de.rnd7.deconzmqttgw.messages.DeconzMessage;
 import de.rnd7.deconzmqttgw.messages.MessageParser;
-import de.rnt7.deconzmqttgwmqtt.GwMqttClient;
+import de.rnt7.deconzmqttgw.mqtt.GwMqttClient;
 
 public class GwWebSocketClient extends WebSocketClient  {
 	private static final Logger LOGGER = LoggerFactory.getLogger(GwWebSocketClient.class);

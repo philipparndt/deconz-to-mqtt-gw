@@ -20,7 +20,6 @@ Example configuration:
 {
     "deconz-api-key": "123456789",
     "deconz-ip": "192.168.0.100",
-
 	"mqtt-url": "tcp://192.168.0.100:1883",
 
     "mapping": {

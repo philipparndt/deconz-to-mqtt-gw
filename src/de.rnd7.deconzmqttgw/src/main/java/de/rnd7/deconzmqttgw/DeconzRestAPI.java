@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.rnd7.deconzmqttgw.messages.MessageParser;
-import de.rnd7.deconzmqttgw.messages.StateMessage;
 import de.rnd7.deconzmqttgw.mqtt.GwMqttClient;
 
 public class DeconzRestAPI {

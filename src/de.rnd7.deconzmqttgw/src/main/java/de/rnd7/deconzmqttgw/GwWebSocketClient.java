@@ -1,8 +1,6 @@
 package de.rnd7.deconzmqttgw;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;

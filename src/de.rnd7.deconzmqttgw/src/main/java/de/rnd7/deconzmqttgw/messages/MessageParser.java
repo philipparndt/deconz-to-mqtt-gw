@@ -3,6 +3,7 @@ package de.rnd7.deconzmqttgw.messages;
 import org.json.JSONObject;
 
 public class MessageParser {
+	private static final String BUTTON = "buttonevent";
 	private static final String PRESSURE = "pressure";
 	private static final String HUMIDITY = "humidity";
 	private static final String TEMPERATURE = "temperature";
@@ -17,7 +18,22 @@ public class MessageParser {
 		else if (message.has("config")) {
 			return parseConfigMessage(message, (JSONObject) message.get("config"));
 		}
+		else if (message.has("e") && message.getString("e").equals("changed")) {
+			return parseChangeMessage(message, message);
+		}
 		
+		return null;
+	}
+
+	private DeconzMessage parseChangeMessage(JSONObject message, JSONObject change) {
+		
+		if (change.has("name")) {
+			NameChangeMessage result = new NameChangeMessage(message.getInt("id"), message.getString("uniqueid"));
+			
+			result.setValue(change.getString("name"));
+			
+			return result;
+		}
 		
 		return null;
 	}
@@ -40,6 +56,10 @@ public class MessageParser {
 		else if (state.has(PRESSURE)) {
 			result.setValue(state.getInt(PRESSURE))
 			.setTopicValueName(PRESSURE);
+		}
+		else if (state.has(BUTTON)) {
+			result.setValue(state.getInt(BUTTON))
+			.setTopicValueName("button");
 		}
 		
 		return result;

@@ -29,6 +29,7 @@ public class Main {
 		try {
 			final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 			executor.scheduleAtFixedRate(this::connect, 500, 500, TimeUnit.MILLISECONDS);
+			executor.scheduleAtFixedRate(this::ping, 10, 10, TimeUnit.SECONDS);
 			
 			this.deconzClient = createClient();
 			
@@ -50,10 +51,22 @@ public class Main {
 			Thread.currentThread().interrupt();
 		}
 	}
+	
+	private void ping() {
+		synchronized(mutex) {
+			if (isConnected()) {
+				deconzClient.sendPing();
+			}
+		}
+	}
+
+	private boolean isConnected() {
+		return deconzClient != null && !deconzClient.isClosed();
+	}
 
 	private void connect() {
 		synchronized(mutex) {
-			if (deconzClient == null || deconzClient.isClosed()) {
+			if (!isConnected()) {
 				try {
 					deconzClient = createClient();
 				} catch (URISyntaxException e) {
@@ -64,7 +77,7 @@ public class Main {
 	}
 	
 	private GwWebSocketClient createClient() throws URISyntaxException {
-		GwWebSocketClient result = new GwWebSocketClient(new URI(config.getDeconzWebSocket()))
+		GwWebSocketClient result = new GwWebSocketClient(config, new URI(config.getDeconzWebSocket()))
 		.setMqttClient(mqttClient)
 		.setSensorTopicLookup(config.getLookup());
 		

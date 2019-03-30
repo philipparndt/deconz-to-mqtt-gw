@@ -11,15 +11,18 @@ import org.slf4j.LoggerFactory;
 
 import de.rnd7.deconzmqttgw.messages.DeconzMessage;
 import de.rnd7.deconzmqttgw.messages.MessageParser;
+import de.rnd7.deconzmqttgw.messages.NameChangeMessage;
 import de.rnd7.deconzmqttgw.mqtt.GwMqttClient;
 
 public class GwWebSocketClient extends WebSocketClient  {
 	private static final Logger LOGGER = LoggerFactory.getLogger(GwWebSocketClient.class);
 	private Map<Integer, String> lookup=new HashMap<>();
 	private GwMqttClient mqttClient;
+	private Config config;
 
-	public GwWebSocketClient(URI serverUri) {
+	public GwWebSocketClient(Config config, URI serverUri) {
 		super(serverUri);
+		this.config = config;
 	}
 	
 	public GwWebSocketClient setSensorTopicLookup(Map<Integer, String> lookup) {
@@ -41,10 +44,16 @@ public class GwWebSocketClient extends WebSocketClient  {
 
 	@Override
 	public void onMessage(String messageJson) {
-
 		DeconzMessage message = new MessageParser().parse(messageJson);
 		if (message == null) {
 			LOGGER.error("Unknown message {}", messageJson);
+			return;
+		}
+		
+		if (message instanceof NameChangeMessage) {
+			NameChangeMessage msg = (NameChangeMessage) message;
+			this.config.putLookup(msg.getId(), msg.getValue());
+			this.lookup.put(msg.getId(), msg.getValue());
 			return;
 		}
 		

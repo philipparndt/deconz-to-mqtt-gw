@@ -1,6 +1,6 @@
 {
-    "deconz-url": "ws://192.168.0.1:433",
-    "mqtt-url": "tcp://192.168.0.1:1883",
+    "deconz-api-key": "123456",
+    "deconz-ip": "192.168.0.1",
 
     "mapping": {
         "sensorA": [1, 2, 3],

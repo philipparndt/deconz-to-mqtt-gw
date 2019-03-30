@@ -4,14 +4,18 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ConfigParser {
-	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ConfigParser.class);
+
 	private ConfigParser() {
 	}
 	
@@ -26,8 +30,12 @@ public class ConfigParser {
 		
 		JSONObject jsonObject = new JSONObject(IOUtils.toString(in, StandardCharsets.UTF_8));
 		
-		config.setDeconzWebSocket(jsonObject.getString("deconz-url"));
+		config.setDeconzApiKey(jsonObject.getString("deconz-api-key"));
+		config.setDeconzIp(jsonObject.getString("deconz-ip"));
 		config.setMqttBroker(jsonObject.getString("mqtt-url"));
+
+		initDeconzWebSocketPort(config);
+		initDeconzDevicePaths(config);
 		
 		if (jsonObject.has("mapping")) {
 			JSONObject mapping = (JSONObject) jsonObject.get("mapping");
@@ -41,5 +49,35 @@ public class ConfigParser {
 		}
 		
 		return config;
+	}
+	
+	private static void initDeconzWebSocketPort(Config config) throws IOException {
+		URL url = new URL(String.format("http://%s/api/%s/config", 
+				config.getDeconzIp(), 
+				config.getDeconzApiKey()));
+		
+		try (InputStream in = url.openStream()) {
+			JSONObject deconzConfig = new JSONObject(IOUtils.toString(in, StandardCharsets.UTF_8));
+			
+			config.setDeconzWebSocketPort(deconzConfig.getInt("websocketport"));
+		}
+	}
+	
+	private static void initDeconzDevicePaths(Config config) throws IOException {
+		URL url = new URL(String.format("http://%s/api/%s/sensors", 
+				config.getDeconzIp(), 
+				config.getDeconzApiKey()));
+		
+		try (InputStream in = url.openStream()) {
+			JSONObject deconzDevices = new JSONObject(IOUtils.toString(in, StandardCharsets.UTF_8));
+			for (String key : deconzDevices.keySet()) {
+				JSONObject device = deconzDevices.getJSONObject(key);
+				String name = device.getString("name");
+				
+				LOGGER.info("device {}: {}", key, name);
+				
+				config.putLookup(Integer.parseInt(key), name);
+			}
+		}
 	}
 }

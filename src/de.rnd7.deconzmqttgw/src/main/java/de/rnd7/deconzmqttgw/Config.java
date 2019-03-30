@@ -6,8 +6,13 @@ import java.util.Map;
 public class Config {
 	private Map<Integer, String> lookup = new HashMap<>();
 	
-	private String deconzWebSocket;
 	private String mqttBroker;
+
+	private String deconzApiKey;
+
+	private String deconzIp;
+
+	private int deconzWsPort;
 	
 	public Map<Integer, String> getLookup() {
 		return lookup;
@@ -17,12 +22,8 @@ public class Config {
 		lookup.put(id, value);
 	}
 	
-	public void setDeconzWebSocket(String deconzWebSocket) {
-		this.deconzWebSocket = deconzWebSocket;
-	}
-
 	public String getDeconzWebSocket() {
-		return deconzWebSocket;
+		return String.format("ws://%s:%s", deconzIp, deconzWsPort);
 	}
 	
 	public void setMqttBroker(String mqttBroker) {
@@ -31,6 +32,26 @@ public class Config {
 	
 	public String getMqttBroker() {
 		return mqttBroker;
+	}
+
+	public void setDeconzApiKey(String deconzApiKey) {
+		this.deconzApiKey = deconzApiKey;
+	}
+
+	public String getDeconzApiKey() {
+		return deconzApiKey;
+	}
+	
+	public void setDeconzIp(String deconzIp) {
+		this.deconzIp = deconzIp;
+	}
+	
+	public String getDeconzIp() {
+		return deconzIp;
+	}
+
+	public void setDeconzWebSocketPort(int deconzWsPort) {
+		this.deconzWsPort = deconzWsPort;
 	}
 	
 }

@@ -17,6 +17,29 @@ import de.rnd7.deconzmqttgw.messages.StateMessage;
 
 public class MessageParserTest {
 	@Test
+	public void test_change_message() throws Exception {
+		DeconzMessage message = new MessageParser().parse(read("name-change.txt"));
+		assertTrue(message instanceof NameChangeMessage);
+		
+		NameChangeMessage msg = (NameChangeMessage) message;
+		assertEquals(10, msg.getId());
+		assertEquals("00:11:22:33:44:55:66:77-88-1000", msg.getUniqueId());
+		assertEquals("home/remote", msg.getValue());
+	}
+	
+	@Test
+	public void test_button_pressed() throws Exception {
+		DeconzMessage message = new MessageParser().parse(read("button.txt"));
+		assertTrue(message instanceof StateMessage);
+		
+		StateMessage msg = (StateMessage) message;
+		assertEquals(10, msg.getId());
+		assertEquals("00:11:22:33:44:55:66:77-01-1000", msg.getUniqueId());
+		assertEquals(1002, msg.getValue());
+		assertEquals("10/button", msg.toTopic(new HashMap<>()));
+	}
+	
+	@Test
 	public void test_door_open_message() throws Exception {
 		DeconzMessage message = new MessageParser().parse(read("door-open.txt"));
 		assertTrue(message instanceof StateMessage);

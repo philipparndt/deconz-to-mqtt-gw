@@ -22,8 +22,10 @@ Example configuration:
 
 ```json
 {
-    "deconz-url": "ws://192.168.0.100:443",
-    "mqtt-url": "tcp://192.168.0.100:1883",
+    "deconz-api-key": "123456789",
+    "deconz-ip": "192.168.0.100",
+
+	"mqtt-url": "tcp://192.168.0.100:1883",
 
     "mapping": {
         "a": [2, 3, 4],

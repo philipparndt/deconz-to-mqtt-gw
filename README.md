@@ -52,3 +52,7 @@ topic path, for example when using a `Xiaomi Aquara Termperature/Humidity/Pressu
 ## openHAB configuration
 
 see [openHAB example](openHAB.md)
+
+## Telegraf configuration
+
+see [Telegraf example](telegraf.md)

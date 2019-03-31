@@ -1,6 +1,6 @@
 # Openhab example 
 
-mqtt.things
+## mqtt.things
 ```
 Bridge mqtt:broker:mosquitto [ host="localhost", port="1883", secure=false, clientID="openhab"] {
 	Thing topic sensora "Sensor" @ "Home" {
@@ -20,7 +20,7 @@ Bridge mqtt:broker:mosquitto [ host="localhost", port="1883", secure=false, clie
 }
 ```
 
-mqtt.items
+## mqtt.items
 ```
 Number SensorA_Temperatur "Temperatur [%.1f °C]" (gHeizung) {
 	channel="mqtt:topic:mosquitto:sensora:Temperature"
@@ -41,7 +41,7 @@ String Raw_SomeContact "SomeContact" {
 }
 ```
 
-mqtt.rules
+## mqtt.rules
 ```
 rule "Raw_SomeContact" 
 when Item Raw_SomeContact received update

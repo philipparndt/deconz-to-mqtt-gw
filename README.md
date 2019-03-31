@@ -23,6 +23,11 @@ Example configuration:
 
     "mqtt-url": "tcp://192.168.0.100:1883",
 
+    "check-connection-interval": 1,
+
+    "full-message-topic": "sensordata",
+    "full-message-interval": 60,
+
     "mapping": {
         "a": [2, 3, 4],
         "b": [5, 6, 7],
@@ -30,6 +35,14 @@ Example configuration:
     }
 }
 ```
+
+every `check-connection-interval` (default: `1`) seconds the websocket 
+connection will be checked. When the connection is broken, a new websocket is
+created. After creation of a new connection all sensor data will be posted
+to ensure the data will be refreshed and is up to date.
+
+When the `full-message-topic` is defined, a full massage in json format will 
+be posted every `full-message-interval` seconds (default: `60`).
 
 The mapping maps the target mqtt topic to the deconz ids.
 It is possible to map a list of deconz ids to one topic.

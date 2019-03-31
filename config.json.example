@@ -3,6 +3,11 @@
     "deconz-ip": "192.168.0.100",
     "mqtt-url": "tcp://192.168.0.100:1883",
 
+    "check-connection-interval": 1,
+
+    "full-message-topic": "sensordata",
+    "full-message-interval": 60,
+
     "mapping": {
         "a": [2, 3, 4],
         "b": [5, 6, 7],

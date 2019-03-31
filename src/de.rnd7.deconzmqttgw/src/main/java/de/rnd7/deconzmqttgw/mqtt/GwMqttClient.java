@@ -11,7 +11,9 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.rnd7.deconzmqttgw.Config;
+import com.google.common.eventbus.Subscribe;
+
+import de.rnd7.deconzmqttgw.config.Config;
 import de.rnd7.deconzmqttgw.messages.GwMessage;
 
 public class GwMqttClient {
@@ -26,50 +28,52 @@ public class GwMqttClient {
 
 	private Optional<MqttClient> client;
 	
-	public GwMqttClient(Config config) {
+	public GwMqttClient(final Config config) {
 		this.config = config;
-		this.client = connect();
+		this.client = this.connect();
 	}
 	
 	private Optional<MqttClient> connect() {
 		try {
 			LOGGER.info("Connecting MQTT client");
-			MqttClient result = new MqttClient(this.config.getMqttBroker(), CLIENTID, persistence);
-			MqttConnectOptions connOpts = new MqttConnectOptions();
+			final MqttClient result = new MqttClient(this.config.getMqttBroker(), CLIENTID, this.persistence);
+			final MqttConnectOptions connOpts = new MqttConnectOptions();
 			connOpts.setCleanSession(true);
 			result.connect(connOpts);
 			
 			return Optional.of(result);
-		} catch (MqttException e) {
+		} catch (final MqttException e) {
 			LOGGER.error(e.getMessage(), e);
 			return Optional.empty();
 		}
 	}
 
-	public void publish(String topic, String value) {
-		synchronized(mutex) {
-			if (!client.filter(MqttClient::isConnected).isPresent()) {
-				client = connect();
+	private void publish(final String topic, final String value) {
+		synchronized(this.mutex) {
+			if (!this.client.filter(MqttClient::isConnected).isPresent()) {
+				this.client = this.connect();
 			}
 			
 			this.client.ifPresent(mqttClient -> {
 				try {
-					MqttMessage message = new MqttMessage(value.getBytes());
+					final MqttMessage message = new MqttMessage(value.getBytes());
 					message.setQos(QOS);
 					mqttClient.publish(topic, message);
-				} catch (MqttException e) {
+				} catch (final MqttException e) {
 					LOGGER.error(e.getMessage(), e);
 				}
 			});
 		}
 	}
 
-	public void publish(GwMessage message) {
-		String topic = message.toTopic(config.getLookup());
-		String valueString = message.getValueString();
+	@Subscribe
+	public void publish(final GwMessage message) {
+		final String topic = message.toTopic(this.config.getLookup());
+		final String valueString = message.getValueString();
 		
 		LOGGER.info("{} = {}", topic, valueString);
 		
-		publish(topic, valueString);
+		this.publish(topic, valueString);
 	}
+	
 }

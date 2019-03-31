@@ -10,7 +10,9 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.rnd7.deconzmqttgw.messages.FullStatusMessage;
 import de.rnd7.deconzmqttgw.messages.MessageParser;
+import de.rnd7.deconzmqttgw.messages.StateMessage;
 import de.rnd7.deconzmqttgw.mqtt.GwMqttClient;
 
 public class DeconzRestAPI {
@@ -18,20 +20,23 @@ public class DeconzRestAPI {
 
 	private Config config;
 
-	public DeconzRestAPI(Config config) {
+	private GwMqttClient mqttClient;
+
+	public DeconzRestAPI(Config config, GwMqttClient mqttClient) {
 		this.config = config;
+		this.mqttClient = mqttClient;
 	}
 
-	public void update(GwMqttClient mqttClient) {
+	public void update() {
 		try {
-			initDeconzWebSocketPort(config);
-			initDeconzDevices(config, mqttClient);
+			initDeconzWebSocketPort();
+			initDeconzDevices();
 		} catch (IOException e) {
 			LOGGER.error(e.getMessage(), e);
 		}
 	}
 	
-	private static void initDeconzWebSocketPort(Config config) throws IOException {
+	private void initDeconzWebSocketPort() throws IOException {
 		URL url = new URL(String.format("http://%s/api/%s/config", 
 				config.getDeconzIp(), 
 				config.getDeconzApiKey()));
@@ -43,12 +48,14 @@ public class DeconzRestAPI {
 		}
 	}
 	
-	private static void initDeconzDevices(Config config, GwMqttClient mqttClient) throws IOException {
+	private void initDeconzDevices() throws IOException {
 		final URL url = new URL(String.format("http://%s/api/%s/sensors", 
 				config.getDeconzIp(), 
 				config.getDeconzApiKey()));
 
 		final MessageParser messageParser = new MessageParser();
+		
+		final FullStatusMessage fullStatusMessage = new FullStatusMessage();
 		
 		try (InputStream in = url.openStream()) {
 			JSONObject deconzDevices = new JSONObject(IOUtils.toString(in, StandardCharsets.UTF_8));
@@ -67,9 +74,24 @@ public class DeconzRestAPI {
 				}
 				
 				if (device.has("state")) {
-					 mqttClient.publish(messageParser.parseStateMessage(device.getJSONObject("state"), key, device.getString("uniqueid")));
+					final StateMessage singelStateMessage = messageParser.parseStateMessage(device.getJSONObject("state"), key, device.getString("uniqueid"));
+					final String topic = singelStateMessage.toTopic(config.getLookup());
+					
+					fullStatusMessage.add(topic, singelStateMessage);
+					
+					 mqttClient.publish(singelStateMessage);
 				}
 			});
+		}
+		
+		mqttClient.publish(fullStatusMessage);
+	}
+	
+	public void fullUpdate() {
+		try {
+			initDeconzDevices();
+		} catch (IOException e) {
+			LOGGER.error(e.getMessage(), e);
 		}
 	}
 

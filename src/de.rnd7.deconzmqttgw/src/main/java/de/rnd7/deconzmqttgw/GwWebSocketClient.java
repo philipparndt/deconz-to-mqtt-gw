@@ -7,7 +7,7 @@ import org.java_websocket.handshake.ServerHandshake;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.rnd7.deconzmqttgw.messages.DeconzMessage;
+import de.rnd7.deconzmqttgw.messages.GwMessage;
 import de.rnd7.deconzmqttgw.messages.MessageParser;
 import de.rnd7.deconzmqttgw.messages.NameChangeMessage;
 import de.rnd7.deconzmqttgw.mqtt.GwMqttClient;
@@ -35,7 +35,7 @@ public class GwWebSocketClient extends WebSocketClient  {
 
 	@Override
 	public void onMessage(String messageJson) {
-		DeconzMessage message = new MessageParser().parse(messageJson);
+		GwMessage message = new MessageParser().parse(messageJson);
 		if (message == null) {
 			LOGGER.error("Unknown message {}", messageJson);
 			return;

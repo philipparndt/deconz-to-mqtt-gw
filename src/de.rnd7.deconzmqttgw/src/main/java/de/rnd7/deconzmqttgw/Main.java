@@ -29,6 +29,7 @@ public class Main {
 		try {
 			final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 			executor.scheduleAtFixedRate(this::connect, 500, 500, TimeUnit.MILLISECONDS);
+			executor.scheduleAtFixedRate(this::fullUpdate, 1, 1, TimeUnit.MINUTES);
 			
 			this.deconzClient = createClient();
 			
@@ -67,9 +68,13 @@ public class Main {
 		}
 	}
 	
+	private void fullUpdate() {
+		new DeconzRestAPI(config, mqttClient).fullUpdate();
+	}
+
+	
 	private GwWebSocketClient createClient() throws URISyntaxException {
-		DeconzRestAPI api = new DeconzRestAPI(config);
-		api.update(mqttClient);
+		new DeconzRestAPI(config, mqttClient).update();
 		
 		GwWebSocketClient result = new GwWebSocketClient(config, new URI(config.getDeconzWebSocket()))
 		.setMqttClient(mqttClient);

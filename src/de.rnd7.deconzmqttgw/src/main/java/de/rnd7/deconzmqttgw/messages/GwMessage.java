@@ -2,11 +2,11 @@ package de.rnd7.deconzmqttgw.messages;
 
 import java.util.Map;
 
-public abstract class DeconzMessage {
+public abstract class GwMessage {
 	private final int id;
 	private final String uid;
 
-	public DeconzMessage(int id, String uid) {
+	public GwMessage(int id, String uid) {
 		this.id = id;
 		this.uid = uid;
 	}

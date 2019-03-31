@@ -1,6 +1,6 @@
 package de.rnd7.deconzmqttgw.messages;
 
-public class ChangeMessage extends DeconzMessage {
+public class ChangeMessage extends GwMessage {
 
 	private String value;
 

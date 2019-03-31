@@ -9,7 +9,7 @@ public class MessageParser {
 	private static final String TEMPERATURE = "temperature";
 	private static final String OPEN = "open";
 
-	public DeconzMessage parse(String messageJson) {
+	public GwMessage parse(String messageJson) {
 		JSONObject message = new JSONObject(messageJson);
 		
 		if (message.has("state")) {
@@ -25,7 +25,7 @@ public class MessageParser {
 		return null;
 	}
 
-	private DeconzMessage parseChangeMessage(JSONObject message, JSONObject change) {
+	private GwMessage parseChangeMessage(JSONObject message, JSONObject change) {
 		
 		if (change.has("name")) {
 			NameChangeMessage result = new NameChangeMessage(message.getInt("id"), message.getString("uniqueid"));
@@ -38,7 +38,7 @@ public class MessageParser {
 		return null;
 	}
 
-	private DeconzMessage parseStateMessage(JSONObject message, JSONObject state) {
+	private GwMessage parseStateMessage(JSONObject message, JSONObject state) {
 		int id = message.getInt("id");
 		String uniqueId = message.getString("uniqueid");
 		return parseStateMessage(state, id, uniqueId);
@@ -72,7 +72,7 @@ public class MessageParser {
 		return result;
 	}
 	
-	private DeconzMessage parseConfigMessage(JSONObject message, JSONObject state) {
+	private GwMessage parseConfigMessage(JSONObject message, JSONObject state) {
 		ConfigMessage result = new ConfigMessage(message.getInt("id"), message.getString("uniqueid"));
 
 		if (state.has("battery")) {

@@ -1,6 +1,6 @@
 package de.rnd7.deconzmqttgw.messages;
 
-public class ConfigMessage extends DeconzMessage {
+public class ConfigMessage extends GwMessage {
 
 	private int value = -1;
 	

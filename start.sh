@@ -1,2 +1,2 @@
 #!/bin/sh
-docker run deconzmqtt
+docker run pharndt/deconzmqttgw

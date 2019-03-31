@@ -11,14 +11,14 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 import de.rnd7.deconzmqttgw.messages.ConfigMessage;
-import de.rnd7.deconzmqttgw.messages.DeconzMessage;
+import de.rnd7.deconzmqttgw.messages.GwMessage;
 import de.rnd7.deconzmqttgw.messages.MessageParser;
 import de.rnd7.deconzmqttgw.messages.StateMessage;
 
 public class MessageParserTest {
 	@Test
 	public void test_change_message() throws Exception {
-		DeconzMessage message = new MessageParser().parse(read("name-change.txt"));
+		GwMessage message = new MessageParser().parse(read("name-change.txt"));
 		assertTrue(message instanceof NameChangeMessage);
 		
 		NameChangeMessage msg = (NameChangeMessage) message;
@@ -29,7 +29,7 @@ public class MessageParserTest {
 	
 	@Test
 	public void test_button_pressed() throws Exception {
-		DeconzMessage message = new MessageParser().parse(read("button.txt"));
+		GwMessage message = new MessageParser().parse(read("button.txt"));
 		assertTrue(message instanceof StateMessage);
 		
 		StateMessage msg = (StateMessage) message;
@@ -41,7 +41,7 @@ public class MessageParserTest {
 	
 	@Test
 	public void test_door_open_message() throws Exception {
-		DeconzMessage message = new MessageParser().parse(read("door-open.txt"));
+		GwMessage message = new MessageParser().parse(read("door-open.txt"));
 		assertTrue(message instanceof StateMessage);
 		
 		StateMessage msg = (StateMessage) message;
@@ -53,7 +53,7 @@ public class MessageParserTest {
 	
 	@Test
 	public void test_door_close_message() throws Exception {
-		DeconzMessage message = new MessageParser().parse(read("door-close.txt"));
+		GwMessage message = new MessageParser().parse(read("door-close.txt"));
 		assertTrue(message instanceof StateMessage);
 		
 		StateMessage msg = (StateMessage) message;
@@ -65,7 +65,7 @@ public class MessageParserTest {
 	
 	@Test
 	public void test_temperature_message() throws Exception {
-		DeconzMessage message = new MessageParser().parse(read("temperature.txt"));
+		GwMessage message = new MessageParser().parse(read("temperature.txt"));
 		assertTrue(message instanceof StateMessage);
 		
 		StateMessage msg = (StateMessage) message;
@@ -77,7 +77,7 @@ public class MessageParserTest {
 	
 	@Test
 	public void test_humidity_message() throws Exception {
-		DeconzMessage message = new MessageParser().parse(read("humidity.txt"));
+		GwMessage message = new MessageParser().parse(read("humidity.txt"));
 		assertTrue(message instanceof StateMessage);
 		
 		StateMessage msg = (StateMessage) message;
@@ -89,7 +89,7 @@ public class MessageParserTest {
 	
 	@Test
 	public void test_pressure_message() throws Exception {
-		DeconzMessage message = new MessageParser().parse(read("pressure.txt"));
+		GwMessage message = new MessageParser().parse(read("pressure.txt"));
 		assertTrue(message instanceof StateMessage);
 		
 		StateMessage msg = (StateMessage) message;
@@ -101,7 +101,7 @@ public class MessageParserTest {
 	
 	@Test
 	public void test_battery_message() throws Exception {
-		DeconzMessage message = new MessageParser().parse(read("battery.txt"));
+		GwMessage message = new MessageParser().parse(read("battery.txt"));
 		assertTrue(message instanceof ConfigMessage);
 		
 		ConfigMessage msg = (ConfigMessage) message;

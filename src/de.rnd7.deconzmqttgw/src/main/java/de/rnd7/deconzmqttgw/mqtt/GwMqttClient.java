@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.rnd7.deconzmqttgw.Config;
-import de.rnd7.deconzmqttgw.messages.DeconzMessage;
+import de.rnd7.deconzmqttgw.messages.GwMessage;
 
 public class GwMqttClient {
 	private static final int QOS = 2;
@@ -48,7 +48,7 @@ public class GwMqttClient {
 
 	public void publish(String topic, String value) {
 		synchronized(mutex) {
-			if (!client.map(MqttClient::isConnected).orElse(false)) {
+			if (!client.filter(MqttClient::isConnected).isPresent()) {
 				client = connect();
 			}
 			
@@ -64,7 +64,7 @@ public class GwMqttClient {
 		}
 	}
 
-	public void publish(DeconzMessage message) {
+	public void publish(GwMessage message) {
 		String topic = message.toTopic(config.getLookup());
 		String valueString = message.getValueString();
 		

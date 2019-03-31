@@ -2,7 +2,7 @@ package de.rnd7.deconzmqttgw.messages;
 
 import java.util.Objects;
 
-public class StateMessage extends DeconzMessage {
+public class StateMessage extends GwMessage {
 
 	private Object value;
 	private String topicValueName;

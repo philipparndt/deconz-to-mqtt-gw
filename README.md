@@ -5,7 +5,7 @@
 You neen a deconz API key. To get this:
 
 - Open the phoscon web application and navigate to: Gateway / Extended
-- Click on: `Connect App``
+- Click on: `Connect App`
 - Execute the following command within the next 60 secounds: `curl -H "Content-Type: application/json" -X POST -d '{"devicetype": "deconz-mqtt"}' http://<host>/api`
 
 the given username can be used as API key.

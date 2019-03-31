@@ -30,7 +30,7 @@
   password = "PASSWORD"
   insecure_skip_verify = false
 
-# # Read metrics from MQTT topic(s)
+# Read metrics from MQTT topic(s)
 [[inputs.mqtt_consumer]]
   servers = ["tcp://127.0.0.1:1883"]
   qos = 0

@@ -6,7 +6,7 @@ import org.json.JSONObject;
 
 public class FullStatusMessage extends GwMessage {
 
-	private JSONObject message = new JSONObject();
+	private final JSONObject message = new JSONObject();
 	
 	public FullStatusMessage() {
 		super(-1, "");
@@ -23,11 +23,16 @@ public class FullStatusMessage extends GwMessage {
 	}
 
 	@Override
-	public String toTopic(Map<Integer, String> idLookup) {
+	public String toTopic(final Map<Integer, String> idLookup) {
 		return "sensordata";
 	}
 	
-	public void add(String topic, StateMessage state) {
+	@Override
+	public Object getValue() {
+		return null;
+	}
+	
+	public void add(final String topic, final GwMessage state) {
 		if (topic != null) {
 			this.message.put(topic.replace("/", "."), state.getValue());
 		}

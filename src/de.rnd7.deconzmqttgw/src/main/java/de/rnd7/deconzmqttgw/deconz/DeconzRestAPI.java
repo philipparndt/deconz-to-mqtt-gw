@@ -15,6 +15,7 @@ import com.google.common.eventbus.EventBus;
 
 import de.rnd7.deconzmqttgw.config.Config;
 import de.rnd7.deconzmqttgw.messages.FullStatusMessage;
+import de.rnd7.deconzmqttgw.messages.GwMessage;
 import de.rnd7.deconzmqttgw.messages.MessageParser;
 import de.rnd7.deconzmqttgw.messages.StateMessage;
 
@@ -68,7 +69,8 @@ public class DeconzRestAPI {
 
 	private Stream<Device> streamAllDevices() throws IOException {
 		try (InputStream in = this.getRestUrl("sensors").openStream()) {
-			final JSONObject deconzDevices = new JSONObject(IOUtils.toString(in, StandardCharsets.UTF_8));
+			final String string = IOUtils.toString(in, StandardCharsets.UTF_8);
+			final JSONObject deconzDevices = new JSONObject(string);
 			
 			return deconzDevices.keySet().stream()
 			.map(Integer::parseInt)
@@ -99,6 +101,15 @@ public class DeconzRestAPI {
 			this.streamAllDevices().forEach(device -> {
 				if (device.data.has("state")) {
 					final StateMessage singelStateMessage = MESSAGE_PARSER.parseStateMessage(device.data.getJSONObject("state"), device.key, device.data.getString("uniqueid"));
+					final String topic = singelStateMessage.toTopic(this.config.getLookup());
+					
+					fullStatusMessage.add(topic, singelStateMessage);
+					
+					this.eventBus.post(singelStateMessage);
+				}
+				
+				if (device.data.has("config")) {
+					final GwMessage singelStateMessage = MESSAGE_PARSER.parseConfigMessage(device.data.getJSONObject("config"), device.key, device.data.getString("uniqueid"));
 					final String topic = singelStateMessage.toTopic(this.config.getLookup());
 					
 					fullStatusMessage.add(topic, singelStateMessage);

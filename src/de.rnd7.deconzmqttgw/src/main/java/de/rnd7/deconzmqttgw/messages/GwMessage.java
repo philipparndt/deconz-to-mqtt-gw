@@ -6,37 +6,39 @@ public abstract class GwMessage {
 	private final int id;
 	private final String uid;
 
-	public GwMessage(int id, String uid) {
+	public GwMessage(final int id, final String uid) {
 		this.id = id;
 		this.uid = uid;
 	}
 	
 	public int getId() {
-		return id;
+		return this.id;
 	}
 	
 	public String getUniqueId() {
-		return uid;
+		return this.uid;
 	}
+	
+	public abstract Object getValue();
 	
 	public abstract String getValueString();
 	
 	protected abstract String getTopicValueName();
 	
-	public String toTopic(Map<Integer, String> idLookup) {
-		String topicPart = idLookup.get(id);
+	public String toTopic(final Map<Integer, String> idLookup) {
+		String topicPart = idLookup.get(this.id);
 		if (topicPart == null) {
-			topicPart = "" + id;
+			topicPart = "" + this.id;
 		}
 		
-		StringBuilder result = new StringBuilder();
+		final StringBuilder result = new StringBuilder();
 		result.append(topicPart);
 		
 		if (!topicPart.endsWith("/")) {
 			result.append("/");
 		}
 		
-		result.append(getTopicValueName());
+		result.append(this.getTopicValueName());
 		
 		return result.toString();
 	}

@@ -54,7 +54,7 @@ public class Main {
 			final long fullMessageInterval = config.getFullMessageInterval().getSeconds();
 			LOGGER.error("Scheduling full message every {} seconds", fullMessageInterval);
 			
-			executor.scheduleAtFixedRate(this::fullUpdate, fullMessageInterval, fullMessageInterval, TimeUnit.SECONDS);
+			executor.scheduleAtFixedRate(this::fullUpdate, 0, fullMessageInterval, TimeUnit.SECONDS);
 		}
 	}
 

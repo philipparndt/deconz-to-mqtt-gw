@@ -82,6 +82,5 @@ public class Main {
 		} catch (final IOException e) {
 			LOGGER.error(e.getMessage(), e);
 		}
-		
 	}
 }
